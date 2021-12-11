@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="JSONPJSONP全称 JSON with Padding，用于解决跨域问题的一种方案。由于同源策略的限制，浏览器只允许XmlHttpRequest请求同源（域名、协议、端口相同）的资源，而对与请求script脚本资源却没有限制。通过包裹script标签来实现跨域请求，然后在服务端获取JSON数据并执行回调函数，这种跨域请求的方法被称为JSONP。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JSONP原理及简单实现">
+<meta property="og:url" content="http://coldink.cc/202017/index.html">
+<meta property="og:site_name" content="Jäger的部落格">
+<meta property="og:description" content="JSONPJSONP全称 JSON with Padding，用于解决跨域问题的一种方案。由于同源策略的限制，浏览器只允许XmlHttpRequest请求同源（域名、协议、端口相同）的资源，而对与请求script脚本资源却没有限制。通过包裹script标签来实现跨域请求，然后在服务端获取JSON数据并执行回调函数，这种跨域请求的方法被称为JSONP。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-09-20T07:20:14.000Z">
+<meta property="article:modified_time" content="2021-12-11T08:28:03.098Z">
+<meta property="article:author" content="Jäger">
+<meta property="article:tag" content="javascript">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>JSONP原理及简单实现</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/reset.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="max-width mx-auto px3 ltr">    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Archives</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/riadloc">Github</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/182021/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/282017/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://coldink.cc/202017/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://coldink.cc/202017/&text=JSONP原理及简单实现"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://coldink.cc/202017/&title=JSONP原理及简单实现"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://coldink.cc/202017/&is_video=false&description=JSONP原理及简单实现"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JSONP原理及简单实现&body=Check out this article: http://coldink.cc/202017/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://coldink.cc/202017/&title=JSONP原理及简单实现"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://coldink.cc/202017/&title=JSONP原理及简单实现"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://coldink.cc/202017/&title=JSONP原理及简单实现"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://coldink.cc/202017/&title=JSONP原理及简单实现"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://coldink.cc/202017/&name=JSONP原理及简单实现&description=&lt;h2 id=&quot;JSONP&quot;&gt;&lt;a href=&quot;#JSONP&quot; class=&quot;headerlink&quot; title=&quot;JSONP&quot;&gt;&lt;/a&gt;JSONP&lt;/h2&gt;&lt;p&gt;JSONP全称 JSON with Padding，用于解决跨域问题的一种方案。&lt;br&gt;由于同源策略的限制，浏览器只允许XmlHttpRequest请求同源（域名、协议、端口相同）的资源，而对与请求script脚本资源却没有限制。通过包裹script标签来实现跨域请求，然后在服务端获取JSON数据并执行回调函数，这种跨域请求的方法被称为JSONP。&lt;br&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#JSONP"><span class="toc-number">1.</span> <span class="toc-text">JSONP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">实现原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.</span> <span class="toc-text">简单实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A6%81%E7%82%B9"><span class="toc-number">4.</span> <span class="toc-text">要点</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        JSONP原理及简单实现
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Jäger的部落格</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2017-09-20T07:20:14.000Z" itemprop="datePublished">2017-09-20</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/javascript/" rel="tag">javascript</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="JSONP"><a href="#JSONP" class="headerlink" title="JSONP"></a>JSONP</h2><p>JSONP全称 JSON with Padding，用于解决跨域问题的一种方案。<br>由于同源策略的限制，浏览器只允许XmlHttpRequest请求同源（域名、协议、端口相同）的资源，而对与请求script脚本资源却没有限制。通过包裹script标签来实现跨域请求，然后在服务端获取JSON数据并执行回调函数，这种跨域请求的方法被称为JSONP。<br><span id="more"></span></p>
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><ol>
+<li>首先在客户端注册一个callback方法，放到window对象上，如：<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">callbackFunction (json) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">JSON</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+然后把callback的名字（callbackFunction）传给服务器。</li>
+<li>服务器先生成 JOSN 数据。</li>
+<li>将 JOSN 数据直接以入参的方式，放置到 function 中，这样就生成了一段 js 语法的文档（如callbackFunction(JOSN)），返回给客户端。</li>
+<li>客户端浏览器，将返回的JS标签插入DOM，解析script标签后，会执行callbackFunction(JOSN)。<br>通过这种方式，即可实现跨域获取数据。<h2 id="简单实现"><a href="#简单实现" class="headerlink" title="简单实现"></a>简单实现</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; JSONP &#125; <span class="keyword">from</span> <span class="string">&#x27;./JSONP&#x27;</span></span><br><span class="line"><span class="comment">// 调用</span></span><br><span class="line">JSONP(&#123;</span><br><span class="line">  <span class="attr">url</span>: <span class="string">&#x27;url&#x27;</span>,</span><br><span class="line">  <span class="attr">data</span>: &#123;  </span><br><span class="line">    <span class="attr">key1</span>: <span class="string">&#x27;key1&#x27;</span>  </span><br><span class="line">  &#125;,  </span><br><span class="line">  callback (data) &#123;  </span><br><span class="line">    <span class="comment">// data 是服务端返回的数据  </span></span><br><span class="line">  &#125;  </span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// JSONP.js</span></span><br><span class="line"><span class="keyword">let</span> JSONP = <span class="function">(<span class="params">config = &#123;&#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> &#123; data, url, callback &#125; = config</span><br><span class="line">  <span class="comment">// 拼接请求Url</span></span><br><span class="line">  <span class="keyword">if</span> (!url) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&#x27;url is required!&#x27;</span>)</span><br><span class="line">  <span class="keyword">let</span> name = <span class="string">`id_<span class="subst">$&#123;(<span class="keyword">new</span> <span class="built_in">Date</span>()).getTime()&#125;</span>_<span class="subst">$&#123;<span class="built_in">Math</span>.random().toString().substr(<span class="number">2</span>)&#125;</span>`</span></span><br><span class="line">  <span class="keyword">let</span> srcUrl = getSrcUrl(url, &#123;</span><br><span class="line">    data,</span><br><span class="line">    <span class="attr">callback</span>: name</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="comment">// 插入Script标签</span></span><br><span class="line">  <span class="keyword">let</span> script = <span class="built_in">document</span>.createElement(<span class="string">&#x27;script&#x27;</span>)</span><br><span class="line">  script.type = <span class="string">&#x27;text/javascript&#x27;</span></span><br><span class="line">  script.src = srcUrl</span><br><span class="line">  script.id = name</span><br><span class="line">  <span class="comment">// CallBack 放到 window 对象，调用后销毁</span></span><br><span class="line">  <span class="built_in">window</span>[name] = <span class="function"><span class="keyword">function</span> (<span class="params">json</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 执行这个函数后，要销毁这个函数</span></span><br><span class="line">    <span class="built_in">window</span>[name] = <span class="literal">undefined</span></span><br><span class="line">    <span class="comment">// 获取这个script的元素</span></span><br><span class="line">    <span class="keyword">var</span> elem = <span class="built_in">document</span>.getElementById(name)</span><br><span class="line">    <span class="comment">// 删除head里面插入的script，这三步都是为了不影响污染整个DOM啊</span></span><br><span class="line">    removeElem(elem)</span><br><span class="line">    <span class="comment">// 执行传入的的函数</span></span><br><span class="line">    callback &amp;&amp; <span class="keyword">typeof</span> callback === <span class="string">&#x27;function&#x27;</span> &amp;&amp; callback(json)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">var</span> head = <span class="built_in">document</span>.getElementsByTagName(<span class="string">&#x27;head&#x27;</span>)</span><br><span class="line">  <span class="keyword">if</span> (head &amp;&amp; head[<span class="number">0</span>]) &#123;</span><br><span class="line">    head[<span class="number">0</span>].appendChild(script)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> getSrcUrl = <span class="function">(<span class="params">url, data</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> _url = url + (url.indexOf(<span class="string">&#x27;?&#x27;</span>) === -<span class="number">1</span> ? <span class="string">&#x27;?&#x27;</span> : <span class="string">&#x27;&amp;&#x27;</span>)</span><br><span class="line">  <span class="keyword">let</span> ret = <span class="string">&#x27;&#x27;</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> data === <span class="string">&#x27;string&#x27;</span>) &#123;</span><br><span class="line">    ret = data</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> data === <span class="string">&#x27;object&#x27;</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> data) &#123;</span><br><span class="line">      ret += <span class="string">&#x27;&amp;&#x27;</span> + key + <span class="string">&#x27;=&#x27;</span> + <span class="built_in">encodeURIComponent</span>(data[key])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  ret = ret.substr(<span class="number">1</span>)</span><br><span class="line">  <span class="keyword">return</span> _url + ret</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> removeElem = <span class="function">(<span class="params">elem</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> parent = elem.parentNode</span><br><span class="line">  <span class="keyword">if</span> (parent &amp;&amp; parent.nodeType !== <span class="number">11</span>) &#123;</span><br><span class="line">    parent.removeChild(elem)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> JSONP</span><br></pre></td></tr></table></figure>
+<h2 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h2></li>
+<li>在 jquery 中，JSOP 被封装在 $.ajax() 方法中，但是他的实现原理与 ajax 完全不同。</li>
+<li>JSONP的兼容性较好，在更加古老的浏览器中都可以运行，不需要XMLHttpRequest或ActiveX的支持。</li>
+<li>JSONP只支持GET请求而不支持POST等其它类型的HTTP请求。</li>
+<li>JSONP在调用失败的时候不会返回各种HTTP状态码（解决方法：添加timeout参数，虽然JSONP请求本身的错误没有被捕获，但是最终会因为超时而执行error回调）。</li>
+<li>在使用JSONP的时候必须要保证使用的JSONP服务必须是安全可信的。若提供JSONP的服务存在页面注入漏洞，它返回的javascript都将被执行，这是非常危险的。</li>
+</ol>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Archives</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/riadloc">Github</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#JSONP"><span class="toc-number">1.</span> <span class="toc-text">JSONP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">实现原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.</span> <span class="toc-text">简单实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A6%81%E7%82%B9"><span class="toc-number">4.</span> <span class="toc-text">要点</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://coldink.cc/202017/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://coldink.cc/202017/&text=JSONP原理及简单实现"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://coldink.cc/202017/&title=JSONP原理及简单实现"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://coldink.cc/202017/&is_video=false&description=JSONP原理及简单实现"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JSONP原理及简单实现&body=Check out this article: http://coldink.cc/202017/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://coldink.cc/202017/&title=JSONP原理及简单实现"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://coldink.cc/202017/&title=JSONP原理及简单实现"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://coldink.cc/202017/&title=JSONP原理及简单实现"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://coldink.cc/202017/&title=JSONP原理及简单实现"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://coldink.cc/202017/&name=JSONP原理及简单实现&description=&lt;h2 id=&quot;JSONP&quot;&gt;&lt;a href=&quot;#JSONP&quot; class=&quot;headerlink&quot; title=&quot;JSONP&quot;&gt;&lt;/a&gt;JSONP&lt;/h2&gt;&lt;p&gt;JSONP全称 JSON with Padding，用于解决跨域问题的一种方案。&lt;br&gt;由于同源策略的限制，浏览器只允许XmlHttpRequest请求同源（域名、协议、端口相同）的资源，而对与请求script脚本资源却没有限制。通过包裹script标签来实现跨域请求，然后在服务端获取JSON数据并执行回调函数，这种跨域请求的方法被称为JSONP。&lt;br&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2021 Jäger
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Archives</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/riadloc">Github</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- Typed Description -->
+
+    
+<script src="/lib/typed/typed.min.js"></script>
+
+    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+
+    <script type="text/javascript">
+      (function() {
+        jinrishici.load(result => {
+          var { origin, content } = result.data;
+          var strings = `${content}\n---- ${origin.author}(${origin.dynasty})`
+          var speed = 50;
+          console.log(result);
+          new Typed("#about > .description > .coding", {
+            strings: [strings],
+            typeSpeed: speed
+          })
+        });
+      })()
+    </script>
+
+
+</body>
+</html>

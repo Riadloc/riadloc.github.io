@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="基本思想：从开始符号E作为根节点出发，按顺序尝试该非终结符号的所有规则分析树从上到下，从左到右的构建过程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="递归下降分析子程序">
+<meta property="og:url" content="http://coldink.cc/262016/index.html">
+<meta property="og:site_name" content="Jäger的部落格">
+<meta property="og:description" content="基本思想：从开始符号E作为根节点出发，按顺序尝试该非终结符号的所有规则分析树从上到下，从左到右的构建过程">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/b12dc344gw1fb4a6305p6j20ja0a0gmi.jpg">
+<meta property="article:published_time" content="2016-12-26T08:26:24.000Z">
+<meta property="article:modified_time" content="2021-12-11T08:28:03.098Z">
+<meta property="article:author" content="Jäger">
+<meta property="article:tag" content="编译原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://ww3.sinaimg.cn/large/b12dc344gw1fb4a6305p6j20ja0a0gmi.jpg">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>递归下降分析子程序</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/reset.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="max-width mx-auto px3 ltr">    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Archives</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/riadloc">Github</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/272016/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/252016/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://coldink.cc/262016/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://coldink.cc/262016/&text=递归下降分析子程序"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://coldink.cc/262016/&title=递归下降分析子程序"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://coldink.cc/262016/&is_video=false&description=递归下降分析子程序"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=递归下降分析子程序&body=Check out this article: http://coldink.cc/262016/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://coldink.cc/262016/&title=递归下降分析子程序"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://coldink.cc/262016/&title=递归下降分析子程序"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://coldink.cc/262016/&title=递归下降分析子程序"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://coldink.cc/262016/&title=递归下降分析子程序"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://coldink.cc/262016/&name=递归下降分析子程序&description=&lt;p&gt;&lt;strong&gt;基本思想：&lt;/strong&gt;&lt;br&gt;从开始符号E作为根节点出发，按顺序尝试该非终结符号的所有规则&lt;br&gt;分析树从上到下，从左到右的构建过程&lt;br&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%AE%97%E6%B3%95%E8%BF%87%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">1.算法过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%B5%8B%E8%AF%95"><span class="toc-number">2.</span> <span class="toc-text">2.测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">3.</span> <span class="toc-text">3.数据结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="toc-number">4.</span> <span class="toc-text">4.源代码</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        递归下降分析子程序
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Jäger的部落格</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2016-12-26T08:26:24.000Z" itemprop="datePublished">2016-12-26</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="tag">编译原理</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p><strong>基本思想：</strong><br>从开始符号E作为根节点出发，按顺序尝试该非终结符号的所有规则<br>分析树从上到下，从左到右的构建过程<br><span id="more"></span><br>基本递归调用分析过程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">void A( )&#123;</span><br><span class="line">    选择一条A的产生式: A→X1X2…Xk;</span><br><span class="line">    for( i =1 to k)&#123;</span><br><span class="line">        if(Xi 是一个非终结符号)&#123;</span><br><span class="line">            调用过程Xi();</span><br><span class="line">        else if (Xi等于当前的输入符号a)</span><br><span class="line">            符号a识别成功，读入下一个输入符号;</span><br><span class="line">        else /*该规则无法正确识别，产生一个错误;*/</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1-算法过程"><a href="#1-算法过程" class="headerlink" title="1.算法过程"></a>1.算法过程</h3><p>1.1 消除文法左递归（手动）。<br>1.2 递归下降子程序方法<br>　通过递归下降的方式来对句子进行分析。<br>　若能够接收一个完全的初始字符并且所有的串全部被读入，则算作合法。否则为不合法。
+　</p>
+<h3 id="2-测试"><a href="#2-测试" class="headerlink" title="2.测试"></a>2.测试</h3><p><em>文法为</em>：</p>
+<blockquote>
+<p>G[E]:<br>E→E+T | T<br>T→T*F | F<br>F→( E ) | i</p>
+</blockquote>
+<p>因为包含左递归，故应先消去。<br><em>运行结果：</em><br><img src="http://ww3.sinaimg.cn/large/b12dc344gw1fb4a6305p6j20ja0a0gmi.jpg" alt="输出"></p>
+<h3 id="3-数据结构"><a href="#3-数据结构" class="headerlink" title="3.数据结构"></a>3.数据结构</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX 100</span></span><br><span class="line"><span class="keyword">char</span> Buffer[MAX]; <span class="comment">//保存输入的符号串</span></span><br></pre></td></tr></table></figure>
+<h3 id="4-源代码"><a href="#4-源代码" class="headerlink" title="4.源代码"></a>4.源代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX 100</span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">char</span> Buffer[MAX];</span><br><span class="line"><span class="keyword">int</span> tail;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">E</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">A</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">T</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">B</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">F</span><span class="params">()</span></span>;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">E→TE’           E</span></span><br><span class="line"><span class="comment">E’ →+TE’/ ε     A</span></span><br><span class="line"><span class="comment">T→FT’           T</span></span><br><span class="line"><span class="comment">T’ →*FT’/ ε     B</span></span><br><span class="line"><span class="comment">F→（E）/ i      F</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">    tail = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>,Buffer);</span><br><span class="line">    <span class="built_in">init</span>();</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">E</span>() &amp;&amp; <span class="built_in">strlen</span>(Buffer) == tail)</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Yes!\n&quot;</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;No!\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> N;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;输入判断的次数：&quot;</span>);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;N);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;请输入%d个符号串：\n&quot;</span>,N);</span><br><span class="line">    <span class="keyword">while</span>(N--) <span class="built_in">solve</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">E</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">bool</span> flag = <span class="number">1</span>;</span><br><span class="line">    flag = flag &amp;&amp; <span class="built_in">T</span>();</span><br><span class="line">    flag = flag &amp;&amp; <span class="built_in">A</span>();</span><br><span class="line">    <span class="keyword">return</span> flag;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">A</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">bool</span> flag = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span>(Buffer[tail] == <span class="string">&#x27;+&#x27;</span>)&#123;</span><br><span class="line">        tail ++;</span><br><span class="line">        flag = flag &amp;&amp; <span class="built_in">F</span>();</span><br><span class="line">        flag = flag &amp;&amp; <span class="built_in">B</span>();</span><br><span class="line">        flag = flag &amp;&amp; <span class="built_in">A</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> flag = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> flag;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">T</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">bool</span> flag = <span class="number">1</span>;</span><br><span class="line">    flag = flag &amp;&amp; <span class="built_in">F</span>();</span><br><span class="line">    flag = flag &amp;&amp; <span class="built_in">B</span>();</span><br><span class="line">    <span class="keyword">return</span> flag;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">B</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">bool</span> flag = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span>(Buffer[tail] == <span class="string">&#x27;*&#x27;</span>)&#123;</span><br><span class="line">        tail ++;</span><br><span class="line">        flag = flag &amp;&amp; <span class="built_in">F</span>();</span><br><span class="line">        flag = flag &amp;&amp; <span class="built_in">B</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> flag = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> flag;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">F</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">bool</span> flag = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span>(Buffer[tail] == <span class="string">&#x27;(&#x27;</span>)&#123;</span><br><span class="line">        tail ++;</span><br><span class="line">        flag = flag &amp;&amp; <span class="built_in">E</span>();</span><br><span class="line">        <span class="keyword">if</span>(Buffer[tail] != <span class="string">&#x27;)&#x27;</span>) flag = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">else</span> tail ++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(Buffer[tail] == <span class="string">&#x27;i&#x27;</span>)&#123;</span><br><span class="line">        tail ++;</span><br><span class="line">        flag = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> flag = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> flag;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Archives</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/riadloc">Github</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%AE%97%E6%B3%95%E8%BF%87%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">1.算法过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%B5%8B%E8%AF%95"><span class="toc-number">2.</span> <span class="toc-text">2.测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">3.</span> <span class="toc-text">3.数据结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="toc-number">4.</span> <span class="toc-text">4.源代码</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://coldink.cc/262016/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://coldink.cc/262016/&text=递归下降分析子程序"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://coldink.cc/262016/&title=递归下降分析子程序"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://coldink.cc/262016/&is_video=false&description=递归下降分析子程序"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=递归下降分析子程序&body=Check out this article: http://coldink.cc/262016/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://coldink.cc/262016/&title=递归下降分析子程序"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://coldink.cc/262016/&title=递归下降分析子程序"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://coldink.cc/262016/&title=递归下降分析子程序"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://coldink.cc/262016/&title=递归下降分析子程序"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://coldink.cc/262016/&name=递归下降分析子程序&description=&lt;p&gt;&lt;strong&gt;基本思想：&lt;/strong&gt;&lt;br&gt;从开始符号E作为根节点出发，按顺序尝试该非终结符号的所有规则&lt;br&gt;分析树从上到下，从左到右的构建过程&lt;br&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2021 Jäger
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Archives</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/riadloc">Github</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- Typed Description -->
+
+    
+<script src="/lib/typed/typed.min.js"></script>
+
+    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+
+    <script type="text/javascript">
+      (function() {
+        jinrishici.load(result => {
+          var { origin, content } = result.data;
+          var strings = `${content}\n---- ${origin.author}(${origin.dynasty})`
+          var speed = 50;
+          console.log(result);
+          new Typed("#about > .description > .coding", {
+            strings: [strings],
+            typeSpeed: speed
+          })
+        });
+      })()
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="震惊！通过php返回的json数据竟然出现了这个，程序员看了都沉默了！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php返回json数据前面诡异的小红点">
+<meta property="og:url" content="http://coldink.cc/092017/index.html">
+<meta property="og:site_name" content="Jäger的部落格">
+<meta property="og:description" content="震惊！通过php返回的json数据竟然出现了这个，程序员看了都沉默了！">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/b12dc344gy1fdh26dbge1j20ex035wee">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/b12dc344gy1fdh2899htaj20ib069mx2">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/b12dc344gy1fdhn5e487nj20ew0a71gs">
+<meta property="article:published_time" content="2017-03-09T15:12:18.000Z">
+<meta property="article:modified_time" content="2021-12-11T08:28:03.098Z">
+<meta property="article:author" content="Jäger">
+<meta property="article:tag" content="后台">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/b12dc344gy1fdh26dbge1j20ex035wee">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>php返回json数据前面诡异的小红点</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/reset.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="max-width mx-auto px3 ltr">    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Archives</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/riadloc">Github</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/282017/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/312016/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://coldink.cc/092017/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://coldink.cc/092017/&text=php返回json数据前面诡异的小红点"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://coldink.cc/092017/&title=php返回json数据前面诡异的小红点"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://coldink.cc/092017/&is_video=false&description=php返回json数据前面诡异的小红点"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=php返回json数据前面诡异的小红点&body=Check out this article: http://coldink.cc/092017/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://coldink.cc/092017/&title=php返回json数据前面诡异的小红点"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://coldink.cc/092017/&title=php返回json数据前面诡异的小红点"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://coldink.cc/092017/&title=php返回json数据前面诡异的小红点"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://coldink.cc/092017/&title=php返回json数据前面诡异的小红点"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://coldink.cc/092017/&name=php返回json数据前面诡异的小红点&description=&lt;p&gt;　　震惊！通过php返回的json数据竟然出现了这个，程序员看了都沉默了！&lt;br&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E7%8E%B0%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">发现问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%89%80%E5%9C%A8"><span class="toc-number">2.</span> <span class="toc-text">问题所在</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">解决方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        php返回json数据前面诡异的小红点
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Jäger的部落格</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2017-03-09T15:12:18.000Z" itemprop="datePublished">2017-03-09</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/%E5%90%8E%E5%8F%B0/" rel="tag">后台</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>　　震惊！通过php返回的json数据竟然出现了这个，程序员看了都沉默了！<br><span id="more"></span></p>
+<h3 id="发现问题"><a href="#发现问题" class="headerlink" title="发现问题"></a>发现问题</h3><p>　　url直连php，json数组还能在网页上显示的好好地，在ajax上就出大问题了，response.data返回的竟然是string而不是想要的object。好嘛，不太在意，以为php向前台发送数据本来就是这样的。然后通过JSON.parse()方法想将json字符串转为json对象数组，特么的又出错了，错误如下：</p>
+<p><img src="http://ww1.sinaimg.cn/large/b12dc344gy1fdh26dbge1j20ex035wee" alt="&gt; Unexpected token in JSON at position 2"></p>
+<p>　　网上搜索了一下，他们出现的问题都是 Unexpected token in JSON at position 0，咦，为啥我的出错位置和他们不一样呢？然后分析了一波，把方向转移到我得到的字符串格式有问题，不是严格的JSON字符串格式（JSON.parse()需要）。仔细观察了得到的json字符串一番，发现
+　　</p>
+<ol>
+<li>第一行有个换行符，妈的，不仔细看看不出来。。。</li>
+<li>/符号前面加了转移符号\，如”http://“变成了”http:\/\/“，怎么看怎么别扭</li>
+</ol>
+<p>然后我通过如下代码</p>
+<pre><code>let temp = response.data.replace(/\\/g, &apos;&apos;);
+temp = temp.replace(/\r\n/g, &apos;&apos;);
+goods = JSON.parse(temp)；
+</code></pre><p>成功去掉了换行符和转义符。我以为这样就大功告成了，不禁心里窃喜，打开网页刷新看console，哇塞，咋个还不行呢，出错问题还变了，变成了<code>Unexpected token in JSON at position 1</code>。这下我可没辙了，字符串1这个位置没啥特别的。突然我灵机一动，打开了控制台的network，点进获取的php，哇，I got you! son of bitchs!!!<br><img src="http://ww1.sinaimg.cn/large/b12dc344gy1fdh2899htaj20ib069mx2" alt="red node"><br>哦，在这停顿，鼠标移到红点上面显示\ufeff，赶紧百度一番，顿时发现问题所在和解决方法。</p>
+<h3 id="问题所在"><a href="#问题所在" class="headerlink" title="问题所在"></a>问题所在</h3><p>\ufeff是个BOM字符，平常你是发现不到他的，因为在一般的文本编辑器里，如自带的记事本这个字符是隐形的。它经常会出现在utf-8+BOM编码的文本里面。。</p>
+<p>BOM（Byte Order Mark）是一个字节顺序标签，类似一个标记，又叫签名，用来告诉编辑器当前文件采用何种编码，方便编辑器识别。除了unicode编码，一般的编码集并不会出现bom头。对于utf-16和utf-32，如果不指定bom头，解析程序就默认为ansi编码，从而出现乱码；而对于utf-8，BOM头指定与否，解析程序都可判断。<br>现在几乎所有的文本编辑软件都可以显示并编辑UTF-8编码的文件，但其中很多的表现并不理想。类似WINDOWS自带的记事本等软件，在保存一个以UTF-8编码的文件时，会在文件开始的地方插入三个不可见的字符0xEF、0xBB和0xBF，即BOM。对于一般的文件，这样做并不会产生麻烦。但对于 PHP来说，BOM是个大麻烦。因为PHP并不会忽略BOM，所以在读取、包含或者引用这些文件时，会把BOM作为该文件开头正文的一部分。同时根据嵌入式语言的特点，这串字符最终将被直接执行（显示）出来。</p>
+<p>回到我们的问题中，由于有个配置文件在开发时用WINDOWS自带的记事本编辑保存过，导致这个文件在开头加入了BOM头，而这个配置文件在各个php接口脚本中都被读取过，从而导致接口输出的json格式数据前面多了BOM头。</p>
+<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><p>在sublime text3或者notepad++里把php的编码转成utf-8无BOM编码就行了，我的转换过后文件头出现了空行，赶紧删除，哈哈，大功告成了。</p>
+<p>最后惊喜的发现response.data直接就是Object了，感动！</p>
+<p><img src="http://ww1.sinaimg.cn/large/b12dc344gy1fdhn5e487nj20ew0a71gs" alt="json object"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>后台老哥你可长点心吧，以后别用记事本写php代码可好？</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Archives</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/riadloc">Github</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E7%8E%B0%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">发现问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%89%80%E5%9C%A8"><span class="toc-number">2.</span> <span class="toc-text">问题所在</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">解决方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://coldink.cc/092017/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://coldink.cc/092017/&text=php返回json数据前面诡异的小红点"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://coldink.cc/092017/&title=php返回json数据前面诡异的小红点"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://coldink.cc/092017/&is_video=false&description=php返回json数据前面诡异的小红点"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=php返回json数据前面诡异的小红点&body=Check out this article: http://coldink.cc/092017/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://coldink.cc/092017/&title=php返回json数据前面诡异的小红点"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://coldink.cc/092017/&title=php返回json数据前面诡异的小红点"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://coldink.cc/092017/&title=php返回json数据前面诡异的小红点"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://coldink.cc/092017/&title=php返回json数据前面诡异的小红点"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://coldink.cc/092017/&name=php返回json数据前面诡异的小红点&description=&lt;p&gt;　　震惊！通过php返回的json数据竟然出现了这个，程序员看了都沉默了！&lt;br&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2021 Jäger
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/archives/">Archives</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/riadloc">Github</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- Typed Description -->
+
+    
+<script src="/lib/typed/typed.min.js"></script>
+
+    <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+
+    <script type="text/javascript">
+      (function() {
+        jinrishici.load(result => {
+          var { origin, content } = result.data;
+          var strings = `${content}\n---- ${origin.author}(${origin.dynasty})`
+          var speed = 50;
+          console.log(result);
+          new Typed("#about > .description > .coding", {
+            strings: [strings],
+            typeSpeed: speed
+          })
+        });
+      })()
+    </script>
+
+
+</body>
+</html>
